@@ -10,9 +10,8 @@ import java.time.format.DateTimeFormatter;
 @RestController
 public class TimeController {
     @GetMapping("/time")
-    public String time(){
-        DateTimeFormatter dateTimeFormatter =
-                DateTimeFormatter.ofPattern("uuuu/MM/dd HH:mm");
+    public String time() {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("uuuu/MM/dd HH:mm");
         LocalDateTime localDateTime = LocalDateTime.now();
         return dateTimeFormatter.format(localDateTime);
     }

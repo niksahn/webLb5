@@ -1,79 +1,69 @@
 package com.niksahn.laba5.controller;
 
 
-import com.niksahn.laba5.model.User;
+import com.niksahn.laba5.manager.SessionManager;
+import com.niksahn.laba5.model.LoginResponse;
+import com.niksahn.laba5.model.UserDto;
 import com.niksahn.laba5.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.FieldError;
 import org.springframework.http.MediaType;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 @RestController
 public class UserController {
-
     private final UserRepository userRepository;
+    private final SessionManager sessionManager;
 
     @Autowired
-    public UserController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository, SessionManager sessionManager) {
         this.userRepository = userRepository;
+        this.sessionManager = sessionManager;
     }
 
-    @PostMapping("/user_page")
-    public List<User> user_page(@RequestBody Map<String, String> login) {
-        List<User> userList = new ArrayList<>();
-        userList.addAll(userRepository.findAllByLogin(login.get("login")));
-        return userList;
+    @PostMapping(value = "/user_info")
+    public ResponseEntity<?> user_page(@RequestHeader("Authorization") Long session_id, @RequestBody String user_login) {
+        var user = userRepository.findByLogin(user_login);
+        if (sessionManager.sessionIsValid(session_id, user.id)) return ResponseEntity.status(HttpStatus.OK).body(user);
+        else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
-    @PostMapping("/")
-    public String login(@RequestBody User user) {
-        for (User u : userRepository.findAll()) {
-            if (u.getLogin().equals(user.getLogin()))
-                if (u.getPassword().equals(user.getPassword())) {
-                    u.setEnterCounter(u.getEnterCounter() + 1);
-                    userRepository.save(u);
-                    return "news_page";
-                } else return "Пароль неверный";
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody UserDto user) {
+        var user_inf = userRepository.findByLogin(user.login);
+        if (user_inf == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } else if (!Objects.equals(user_inf.password, user.password)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        } else {
+            var session = sessionManager.getNewSession(user_inf.id);
+            return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse(user_inf, session));
         }
-        return "Такого пользователя не существует";
     }
 
-    @PostMapping(value = "/registration_page", consumes =
-            MediaType.APPLICATION_JSON_VALUE)
-    public String addUser(@RequestBody @Valid User user,
-                          BindingResult bindingResult) {
-        List<User> userList = new ArrayList<>();
-        userRepository.findAll().forEach(it -> userList.add(it));
+    @PostMapping(value = "/registration", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> addUser(@RequestBody @Valid UserDto user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String result = "";
-            List<ObjectError> errors =
-                    bindingResult.getAllErrors();
+            List<ObjectError> errors = bindingResult.getAllErrors();
             for (ObjectError i : errors) {
                 String fieldErrors = ((FieldError) i).getField();
-                result += (fieldErrors + " - " +
-                        i.getDefaultMessage() + "\n");
+                result += (fieldErrors + " - " + i.getDefaultMessage() + "\n");
             }
-            return result;
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
         }
-
-        for (User user1 : userRepository.findAll()) {
-            if (user1.getLogin().equals(user.getLogin()))
-                return "Такой логин уже существует";
-            else if (user1.getEmail().equals(user.getEmail()))
-                return "Такая почта уже существует";
-        }
-
         userRepository.save(user);
-        return "OK";
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }
