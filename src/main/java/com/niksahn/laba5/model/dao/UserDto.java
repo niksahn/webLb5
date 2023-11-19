@@ -1,12 +1,16 @@
-package com.niksahn.laba5.model;
+package com.niksahn.laba5.model.dao;
 
 
+import com.niksahn.laba5.model.Role;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.Type;
+
 import java.io.Serializable;
 
 
@@ -32,14 +36,21 @@ public class UserDto implements Serializable {
     private Role role;
     private Long enterCounter = 0L;
 
+    @Lob
+    @Nullable
+    @Column(name = "avatar")
+    private  byte[] avatar;
+
     public UserDto() {
     }
 
-    public UserDto(String email, String login, String password, Role role) {
+    public UserDto(String email, String login, String password, Role role , byte[] avatar
+    ) {
         this.email = email;
         this.login = login;
         this.password = password;
         this.role = role;
+        this.avatar = avatar;
     }
 
     public Long getId() {
@@ -85,9 +96,15 @@ public class UserDto implements Serializable {
     public void setRole(Role role) {
         this.role = role;
     }
+
+    public byte[] getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(byte[] avatar) {
+        this.avatar = avatar;
+    }
 }
 
-enum Role {
-    admin, student, moderator,professor
-}
+
 

@@ -3,7 +3,7 @@ package com.niksahn.laba5.controller;
 
 import com.niksahn.laba5.manager.SessionService;
 import com.niksahn.laba5.model.LoginResponse;
-import com.niksahn.laba5.model.UserDto;
+import com.niksahn.laba5.model.dao.UserDto;
 import com.niksahn.laba5.model.UserResponse;
 import com.niksahn.laba5.repository.UserRepository;
 import jakarta.validation.Valid;
@@ -41,7 +41,9 @@ public class UserController {
 
     @GetMapping("/login")
     public ResponseEntity<?> login(@RequestParam String login, @RequestParam String password) {
+        System.out.println("AAAaA");
         var user_inf = userRepository.findByLogin(login);
+        System.out.println(user_inf);
         sessionService.deleteOutdates();
         if (user_inf == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Пользователь не существует");
@@ -51,7 +53,7 @@ public class UserController {
             var session = sessionService.getNewSession(user_inf.getId());
             user_inf.setEnterCounter(user_inf.getEnterCounter() + 1);
             userRepository.save(user_inf);
-            return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse(user_inf, session));
+            return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse(UserResponse.fromUserDto(user_inf), session));
         }
     }
 

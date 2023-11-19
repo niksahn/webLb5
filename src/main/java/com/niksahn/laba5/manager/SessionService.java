@@ -1,9 +1,8 @@
 package com.niksahn.laba5.manager;
 
 import com.niksahn.laba5.Constants;
-import com.niksahn.laba5.model.SessionDto;
+import com.niksahn.laba5.model.dao.SessionDto;
 import com.niksahn.laba5.repository.SessionRepository;
-import jakarta.transaction.TransactionScoped;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.Transactional;

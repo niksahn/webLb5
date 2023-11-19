@@ -1,13 +1,11 @@
 package com.niksahn.laba5.repository;
 
-import com.niksahn.laba5.model.SessionDto;
+import com.niksahn.laba5.model.dao.SessionDto;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface SessionRepository extends CrudRepository<SessionDto, Long> {
