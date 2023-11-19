@@ -5,18 +5,18 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "session")
+@Table(name = "sessions")
 public class SessionDto implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    public Long id;
+    private Long id;
 
     @Column(name = "creation_time")
-    public Long time;
+    private Long time;
 
     @Column(name = "user_id")
-    public Long user_id;
+    private Long user_id;
 
     public SessionDto(Long time, Long user_id) {
         this.time = time;
@@ -25,4 +25,25 @@ public class SessionDto implements Serializable {
 
     public SessionDto() {
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getUserId() {
+        return user_id;
+    }
+
+    public void setUserId(Long user_id1) {
+        user_id = user_id1;
+    }
+
+    public Long getTime() {
+        return time;
+    }
+
+    public void setTime(Long time1) {
+        time = time1;
+    }
+
 }

@@ -14,7 +14,7 @@ public interface SessionRepository extends CrudRepository<SessionDto, Long> {
    // SessionDto findAllByUserId(Long user_id);
 
     @Modifying
-    @Query(value = "delete from session s where s.user_id=:user_id and :time - s.creation_time > :session_life", nativeQuery = true)
-    Void deleteOutdates(@Param("user_id") Long user_id, @Param("time") Long time, @Param("session_life") Long session_life);
+    @Query(value = "delete from sessions  where :time - creation_time > :session_life", nativeQuery = true)
+    Integer deleteOutdates(@Param("time") Long time, @Param("session_life") Long session_life);
 }
 
