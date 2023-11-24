@@ -1,4 +1,4 @@
-package com.niksahn.laba5.model.dao;
+package com.niksahn.laba5.model.dto;
 
 
 import com.niksahn.laba5.model.Role;
@@ -9,7 +9,6 @@ import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import org.hibernate.annotations.Type;
 
 import java.io.Serializable;
 
@@ -39,12 +38,11 @@ public class UserDto implements Serializable {
     @Lob
     @Nullable
     @Column(name = "avatar")
-    private  byte[] avatar;
+    private String avatar;
 
-    public UserDto() {
-    }
+    public UserDto() {}
 
-    public UserDto(String email, String login, String password, Role role , byte[] avatar
+    public UserDto(String email, String login, String password, Role role , String avatar
     ) {
         this.email = email;
         this.login = login;
@@ -97,11 +95,11 @@ public class UserDto implements Serializable {
         this.role = role;
     }
 
-    public byte[] getAvatar() {
+    public String getAvatar() {
         return avatar;
     }
 
-    public void setAvatar(byte[] avatar) {
+    public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
 }

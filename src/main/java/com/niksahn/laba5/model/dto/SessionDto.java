@@ -1,4 +1,4 @@
-package com.niksahn.laba5.model.dao;
+package com.niksahn.laba5.model.dto;
 
 import jakarta.persistence.*;
 

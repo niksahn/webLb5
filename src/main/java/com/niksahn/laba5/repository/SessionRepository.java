@@ -1,6 +1,6 @@
 package com.niksahn.laba5.repository;
 
-import com.niksahn.laba5.model.dao.SessionDto;
+import com.niksahn.laba5.model.dto.SessionDto;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

@@ -1,6 +1,6 @@
 package com.niksahn.laba5.repository;
 
-import com.niksahn.laba5.model.dao.UserDto;
+import com.niksahn.laba5.model.dto.UserDto;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

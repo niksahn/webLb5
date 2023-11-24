@@ -3,7 +3,7 @@ package com.niksahn.laba5.controller;
 
 import com.niksahn.laba5.manager.SessionService;
 import com.niksahn.laba5.model.LoginResponse;
-import com.niksahn.laba5.model.dao.UserDto;
+import com.niksahn.laba5.model.dto.UserDto;
 import com.niksahn.laba5.model.UserResponse;
 import com.niksahn.laba5.repository.UserRepository;
 import jakarta.validation.Valid;
