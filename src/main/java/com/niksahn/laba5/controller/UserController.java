@@ -10,8 +10,10 @@ import com.niksahn.laba5.model.UserResponse;
 import com.niksahn.laba5.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StreamUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.ObjectError;
@@ -19,6 +21,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.http.MediaType;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 
@@ -44,10 +47,10 @@ public class UserController {
         var user = userRepository.findByLogin(login);
         var auth = checkAuth(session_id, user.getId(), sessionService);
         if (auth != null) return auth;
-        return ResponseEntity.status(HttpStatus.OK).body(UserResponse.fromUserDto(user));
+        return ResponseEntity.status(HttpStatus.OK).body(fromUserDto(user));
     }
 
-    @GetMapping(value ="/login")
+    @GetMapping(value = "/login")
     public ResponseEntity<?> login(@RequestParam String login, @RequestParam String password) {
         var user_inf = userRepository.findByLogin(login);
         System.out.println(user_inf);
@@ -60,11 +63,11 @@ public class UserController {
             var session = sessionService.getNewSession(user_inf.getId());
             user_inf.setEnter_сounter(user_inf.getEnter_сounter() + 1);
             userRepository.save(user_inf);
-            return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse(UserResponse.fromUserDto(user_inf), session));
+            return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse(fromUserDto(user_inf), session));
         }
     }
 
-    @PostMapping(value ="/logout")
+    @PostMapping(value = "/logout")
     public ResponseEntity<?> logout(@RequestParam String login, @RequestHeader("Authorization") Long session_id) {
         sessionService.deleteSession(session_id);
         return ResponseEntity.status(HttpStatus.OK).body(null);
@@ -85,7 +88,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
-    @PostMapping(value = "/avatar",consumes = MediaType.MULTIPART_FORM_DATA_VALUE )
+    @PostMapping(value = "/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadAvatar(@RequestBody MultipartFile file, @RequestParam String login, @RequestHeader("Authorization") Long session_id) {
         var user = userRepository.findByLogin(login);
         var auth = checkAuth(session_id, user.getId(), sessionService);
@@ -106,7 +109,7 @@ public class UserController {
                 .body("Успешно");
     }
 
-    @GetMapping(value="/avatar")
+    @GetMapping(value = "/avatar")
     @ResponseBody
     public ResponseEntity<?> getAvatar(@RequestParam String login, @RequestHeader("Authorization") Long session_id) {
         UserDto user = userRepository.findByLogin(login);
@@ -126,5 +129,14 @@ public class UserController {
                 .status(HttpStatus.OK)
                 .contentType(MediaType.IMAGE_PNG)
                 .body(image);
+    }
+    public  UserResponse fromUserDto(UserDto userDto) {
+        byte[] avatar;
+        if (userDto.getAvatar() == null) {
+            avatar = fileService.getImage("default.png");
+        } else {
+            avatar = fileService.getImage(image_path + userDto.getAvatar());
+        }
+        return new UserResponse(userDto.getEmail(), userDto.getLogin(), userDto.getRole(), userDto.getEnter_сounter(), avatar);
     }
 }
