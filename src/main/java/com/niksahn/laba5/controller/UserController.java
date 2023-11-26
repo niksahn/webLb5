@@ -1,8 +1,10 @@
 package com.niksahn.laba5.controller;
 
 
+import com.niksahn.laba5.manager.FileService;
 import com.niksahn.laba5.manager.SessionService;
 import com.niksahn.laba5.model.LoginResponse;
+import com.niksahn.laba5.model.RegistrationRequest;
 import com.niksahn.laba5.model.dto.UserDto;
 import com.niksahn.laba5.model.UserResponse;
 import com.niksahn.laba5.repository.UserRepository;
@@ -15,33 +17,38 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.FieldError;
 import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
+
+import static com.niksahn.laba5.Constants.image_path;
+import static com.niksahn.laba5.controller.Common.checkAuth;
 
 @RestController
 @RequestMapping("/user")
 public class UserController {
     private final UserRepository userRepository;
     private final SessionService sessionService;
+    private final FileService fileService;
 
     @Autowired
-    public UserController(UserRepository userRepository, SessionService sessionService) {
+    public UserController(UserRepository userRepository, SessionService sessionService, FileService fileService) {
         this.userRepository = userRepository;
         this.sessionService = sessionService;
+        this.fileService = fileService;
     }
 
     @GetMapping(value = "/info")
     public ResponseEntity<?> user_page(@RequestHeader("Authorization") Long session_id, @RequestParam String login) {
         var user = userRepository.findByLogin(login);
-        if (sessionService.sessionIsValid(session_id, user.getId()))
-            return ResponseEntity.status(HttpStatus.OK).body(UserResponse.fromUserDto(user));
-        else return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        var auth = checkAuth(session_id, user.getId(), sessionService);
+        if (auth != null) return auth;
+        return ResponseEntity.status(HttpStatus.OK).body(UserResponse.fromUserDto(user));
     }
 
-    @GetMapping("/login")
+    @GetMapping(value ="/login")
     public ResponseEntity<?> login(@RequestParam String login, @RequestParam String password) {
-        System.out.println("AAAaA");
         var user_inf = userRepository.findByLogin(login);
         System.out.println(user_inf);
         sessionService.deleteOutdates();
@@ -51,20 +58,20 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Неверный пароль");
         } else {
             var session = sessionService.getNewSession(user_inf.getId());
-            user_inf.setEnterCounter(user_inf.getEnterCounter() + 1);
+            user_inf.setEnter_сounter(user_inf.getEnter_сounter() + 1);
             userRepository.save(user_inf);
             return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse(UserResponse.fromUserDto(user_inf), session));
         }
     }
 
-    @PostMapping("/logout")
+    @PostMapping(value ="/logout")
     public ResponseEntity<?> logout(@RequestParam String login, @RequestHeader("Authorization") Long session_id) {
         sessionService.deleteSession(session_id);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
     @PostMapping(value = "/registration", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> addUser(@RequestBody @Valid UserDto user, BindingResult bindingResult) {
+    public ResponseEntity<?> addUser(@RequestBody @Valid RegistrationRequest user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             String result = "";
             List<ObjectError> errors = bindingResult.getAllErrors();
@@ -74,11 +81,50 @@ public class UserController {
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
         }
-        try {
-            userRepository.save(user);
-            return ResponseEntity.status(HttpStatus.OK).body(null);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Пользователь уже зарегистрирован");
+        userRepository.save(new UserDto(user.email, user.login, user.password, user.role, null));
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @PostMapping(value = "/avatar",consumes = MediaType.MULTIPART_FORM_DATA_VALUE )
+    public ResponseEntity<String> uploadAvatar(@RequestBody MultipartFile file, @RequestParam String login, @RequestHeader("Authorization") Long session_id) {
+        var user = userRepository.findByLogin(login);
+        var auth = checkAuth(session_id, user.getId(), sessionService);
+        if (auth != null) return auth;
+        var name = file.getOriginalFilename() + "_avatar_" + user.getLogin();
+        if (user.getAvatar() != null) {
+            fileService.deleteImage(image_path + user.getAvatar());
         }
+        if (!fileService.setImage(file, name)) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Ошибка загрузки аватара");
+        }
+        user.setAvatar(name);
+        userRepository.save(user);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body("Успешно");
+    }
+
+    @GetMapping(value="/avatar")
+    @ResponseBody
+    public ResponseEntity<?> getAvatar(@RequestParam String login, @RequestHeader("Authorization") Long session_id) {
+        UserDto user = userRepository.findByLogin(login);
+        var auth = checkAuth(session_id, user.getId(), sessionService);
+        if (auth != null) return auth;
+        byte[] image;
+        if (user.getAvatar() == null) {
+            image = fileService.getImage("default.png");
+
+        } else {
+            image = fileService.getImage(user.getAvatar());
+        }
+        if (image == null) return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("Ошибка загрузки аватара");
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .contentType(MediaType.IMAGE_PNG)
+                .body(image);
     }
 }

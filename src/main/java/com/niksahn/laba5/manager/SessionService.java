@@ -42,9 +42,7 @@ public class SessionService {
     @Scheduled(fixedRate = 2000)
     @Transactional
     public void deleteOutdates() {
-        //System.out.println("SesDel");
         sessionRepository.deleteOutdates(getTime(), Constants.sessionLife);
-        //System.out.println("SesDelFinish");
     }
 
     public void deleteSession(Long session_id) {

@@ -14,7 +14,7 @@ import java.io.Serializable;
 
 
 @Entity
-@Table(name = "users")
+@Table(name = "user")
 public class UserDto implements Serializable {
     @Id
     @Column(name = "id")
@@ -22,27 +22,24 @@ public class UserDto implements Serializable {
     private Long id;
 
     @Column(unique = true)
-    @NotEmpty(message = "Почта не введена")
-    @Pattern(regexp = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.]+@[a-zA-Z0-9.]+$", message = "Введите почту правильно")
     private String email;
     @Column(unique = true)
-    @NotEmpty(message = "Поле логина не заполнено")
     private String login;
-    @Size(min = 4, max = 2000, message = "Размер должен быть от 4 до 2000")
-    @NotEmpty(message = "Введите пароль")
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
-    private Long enterCounter = 0L;
+    @Column(name = "enter_counter")
+    private Long enter_сounter = 0L;
 
     @Lob
     @Nullable
     @Column(name = "avatar")
     private String avatar;
 
-    public UserDto() {}
+    public UserDto() {
+    }
 
-    public UserDto(String email, String login, String password, Role role , String avatar
+    public UserDto(String email, String login, String password, Role role, @org.jetbrains.annotations.Nullable String avatar
     ) {
         this.email = email;
         this.login = login;
@@ -83,12 +80,12 @@ public class UserDto implements Serializable {
         return role;
     }
 
-    public Long getEnterCounter() {
-        return enterCounter;
+    public Long getEnter_сounter() {
+        return enter_сounter;
     }
 
-    public void setEnterCounter(Long enterCounter) {
-        this.enterCounter = enterCounter;
+    public void setEnter_сounter(Long enter_сounter) {
+        this.enter_сounter = enter_сounter;
     }
 
     public void setRole(Role role) {
