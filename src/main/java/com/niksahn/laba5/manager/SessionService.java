@@ -19,16 +19,23 @@ public class SessionService {
     private final SessionRepository sessionRepository;
 
     @Transactional
-    public Boolean sessionIsValid(Long session_id, Long user_id) {
+    public Boolean sessionIsValid(Long session_id) {
         var sessionOpt = sessionRepository.findById(session_id);
         if (sessionOpt.isPresent()) {
-            var session = sessionOpt.get();
-            if (getTime() - session.getTime() < Constants.sessionLife) {
-                updateSession(session_id);
-                return true;
-            }
+            updateSession(session_id);
+            return true;
         }
         return false;
+    }
+
+    public Long getUserIdFromSession(Long session_id) {
+        if (sessionIsValid(session_id)) {
+            var sessionOpt = sessionRepository.findById(session_id);
+            if (sessionOpt.isPresent()) {
+                return sessionOpt.get().getUserId();
+            }
+        }
+        return null;
     }
 
     public SessionService(SessionRepository sessionRepository) {
@@ -39,6 +46,7 @@ public class SessionService {
         var session = sessionRepository.save(new SessionDto(getTime(), user_id));
         return session.getId();
     }
+
     @Scheduled(fixedRate = 2000)
     @Transactional
     public void deleteOutdates() {
@@ -58,6 +66,7 @@ public class SessionService {
             sessionRepository.save(session);
         }
     }
+
 
     private Long getTime() {
         return Clock.systemUTC().instant().getLong(ChronoField.INSTANT_SECONDS);
