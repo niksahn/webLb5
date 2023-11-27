@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 
 @RestController
+@CrossOrigin
 @RequestMapping("/news")
 public class NewsController {
     private final UserRepository userRepository;

@@ -29,6 +29,7 @@ import static com.niksahn.laba5.Constants.image_path;
 import static com.niksahn.laba5.controller.Common.checkAuth;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/user")
 public class UserController {
     private final UserRepository userRepository;
