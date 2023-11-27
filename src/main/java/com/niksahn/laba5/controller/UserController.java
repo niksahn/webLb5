@@ -44,6 +44,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/info")
+    @CrossOrigin
     public ResponseEntity<?> user_page(@RequestHeader("Authorization") Long session_id, @RequestParam String login) {
         var user = userRepository.findByLogin(login);
         var auth = checkAuth(session_id, user.getId(), sessionService);
@@ -52,6 +53,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/login")
+    @CrossOrigin
     public ResponseEntity<?> login(@RequestParam String login, @RequestParam String password) {
         var user_inf = userRepository.findByLogin(login);
         System.out.println(user_inf);
@@ -68,12 +70,14 @@ public class UserController {
         }
     }
 
+    @CrossOrigin
     @PostMapping(value = "/logout")
     public ResponseEntity<?> logout(@RequestParam String login, @RequestHeader("Authorization") Long session_id) {
         sessionService.deleteSession(session_id);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
+    @CrossOrigin
     @PostMapping(value = "/registration", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addUser(@RequestBody @Valid RegistrationRequest user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -89,6 +93,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
+    @CrossOrigin
     @PostMapping(value = "/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadAvatar(@RequestBody MultipartFile file, @RequestParam String login, @RequestHeader("Authorization") Long session_id) {
         var user = userRepository.findByLogin(login);
@@ -110,6 +115,7 @@ public class UserController {
                 .body("Успешно");
     }
 
+    @CrossOrigin
     @GetMapping(value = "/avatar")
     @ResponseBody
     public ResponseEntity<?> getAvatar(@RequestParam String login, @RequestHeader("Authorization") Long session_id) {

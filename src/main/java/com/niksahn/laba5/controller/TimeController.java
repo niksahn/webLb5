@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
 @RequestMapping("/time")
 public class TimeController {
     @GetMapping("/")
+    @CrossOrigin
     public String time() {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("uuuu/MM/dd HH:mm");
         LocalDateTime localDateTime = LocalDateTime.now();

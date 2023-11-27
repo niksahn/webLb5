@@ -34,6 +34,7 @@ public class NewsController {
     }
 
     @GetMapping("/all")
+    @CrossOrigin
     public ResponseEntity<?> getAllNews() {
         var newsList = newsRepository.findAll();
         ArrayList<NewsResponse> response = new ArrayList<NewsResponse>();
