@@ -1,11 +1,12 @@
 package com.niksahn.laba5.model.dto;
 
+import com.niksahn.laba5.model.response.CourseResponse;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
 @Entity
 @Table(name = "course")
-public class Course {
+public class CourseDto {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,12 +19,17 @@ public class Course {
     @Nullable
     private String description;
 
-    public Course() {
+    @Column(name = "image_path")
+    private String image_path;
+
+
+    public CourseDto() {
     }
 
-    public Course(String name, String description) {
+    public CourseDto(String name, @Nullable String description, String image_path) {
         this.description = description;
         this.name = name;
+        this.image_path = image_path;
     }
 
     public void setDescription(@Nullable String description) {
@@ -45,5 +51,16 @@ public class Course {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setImage_path(String image_path) {
+        this.image_path = image_path;
+    }
+    public String getImage_path() {
+        return image_path;
+    }
+
+    public CourseResponse fromCourseDto(byte[] image) {
+        return new CourseResponse(id, name, description, image);
     }
 }

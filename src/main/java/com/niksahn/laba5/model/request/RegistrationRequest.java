@@ -1,4 +1,4 @@
-package com.niksahn.laba5.model;
+package com.niksahn.laba5.model.request;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;

@@ -3,9 +3,9 @@ package com.niksahn.laba5.controller;
 import com.niksahn.laba5.model.Role;
 import com.niksahn.laba5.service.FileService;
 import com.niksahn.laba5.service.SessionService;
-import com.niksahn.laba5.model.RegistrationRequest;
+import com.niksahn.laba5.model.request.RegistrationRequest;
 import com.niksahn.laba5.model.dto.UserDto;
-import com.niksahn.laba5.model.UserResponse;
+import com.niksahn.laba5.model.response.UserResponse;
 import com.niksahn.laba5.repository.UserRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,8 +85,8 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
         }
         try {
-            userRepository.save(new UserDto(user.email, user.login, user.password, Role.user ,null));
-        }catch (Exception e){
+            userRepository.save(new UserDto(user.email, user.login, user.password, Role.user, null));
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Такой пользователь уже зарегистрирован");
         }
         return ResponseEntity.status(HttpStatus.OK).body(null);
@@ -145,6 +145,6 @@ public class UserController {
         } else {
             avatar = fileService.getImage(image_path + userDto.getAvatar());
         }
-        return new UserResponse(userDto.getEmail(), userDto.getLogin(), userDto.getRole(), userDto.getEnter_сounter(), avatar);
+        return new UserResponse(userDto.getId(), userDto.getEmail(), userDto.getLogin(), userDto.getRole(), userDto.getEnter_сounter(), avatar);
     }
 }

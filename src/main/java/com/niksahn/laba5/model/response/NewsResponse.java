@@ -1,4 +1,4 @@
-package com.niksahn.laba5.model;
+package com.niksahn.laba5.model.response;
 
 import java.util.ArrayList;
 

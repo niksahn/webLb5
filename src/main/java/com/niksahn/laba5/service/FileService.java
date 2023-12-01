@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -27,6 +28,15 @@ public class FileService {
     public boolean setImage(MultipartFile file, String name) {
         try {
             file.transferTo(new File(image_path + "/" + name));
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
+    public boolean setImage(byte[] file, String name) {
+        try (OutputStream outputStream = Files.newOutputStream(Paths.get(image_path + "/" + name))) {
+            outputStream.write(file, 0, file.length);
             return true;
         } catch (IOException e) {
             return false;

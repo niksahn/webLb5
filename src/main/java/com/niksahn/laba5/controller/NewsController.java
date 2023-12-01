@@ -2,7 +2,7 @@ package com.niksahn.laba5.controller;
 
 import com.niksahn.laba5.service.FileService;
 import com.niksahn.laba5.service.SessionService;
-import com.niksahn.laba5.model.NewsResponse;
+import com.niksahn.laba5.model.response.NewsResponse;
 import com.niksahn.laba5.model.dto.NewsDto;
 import com.niksahn.laba5.repository.ImagesRepository;
 import com.niksahn.laba5.repository.NewsRepository;

@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "user_courses")
-public class UserCourses {
+public class UserCoursesDto {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,6 +16,14 @@ public class UserCourses {
 
     @Column(name = "course_id")
     private Long course_id;
+
+    UserCoursesDto() {
+    }
+
+    public UserCoursesDto(Long user_id, Long course_id) {
+        this.course_id = course_id;
+        this.user_id = user_id;
+    }
 
     public Long getId() {
         return id;
