@@ -16,5 +16,4 @@ public class RegistrationRequest {
     @Size(min = 4, max = 250, message = "Размер должен быть от 4 до 250")
     @NotEmpty(message = "Введите пароль")
     public String password;
-    public Role role;
 }

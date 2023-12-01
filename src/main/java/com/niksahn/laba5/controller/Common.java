@@ -1,6 +1,6 @@
 package com.niksahn.laba5.controller;
 
-import com.niksahn.laba5.manager.SessionService;
+import com.niksahn.laba5.service.SessionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

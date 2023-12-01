@@ -6,12 +6,8 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 
 import java.io.Serializable;
-
 
 @Entity
 @Table(name = "user")
@@ -36,16 +32,15 @@ public class UserDto implements Serializable {
     @Column(name = "avatar")
     private String avatar;
 
-    public UserDto() {
-    }
+    public UserDto() {}
 
-    public UserDto(String email, String login, String password, Role role, @org.jetbrains.annotations.Nullable String avatar
+    public UserDto(String email, String login, String password, Role role, @Nullable String avatar
     ) {
         this.email = email;
         this.login = login;
         this.password = password;
-        this.role = role;
         this.avatar = avatar;
+        this.role = role;
     }
 
     public Long getId() {

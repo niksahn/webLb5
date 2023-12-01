@@ -1,4 +1,4 @@
-package com.niksahn.laba5.manager;
+package com.niksahn.laba5.service;
 
 import com.niksahn.laba5.Constants;
 import com.niksahn.laba5.model.dto.SessionDto;
@@ -42,8 +42,9 @@ public class SessionService {
         this.sessionRepository = sessionRepository;
     }
 
-    public Long getNewSession(Long user_id) {
-        var session = sessionRepository.save(new SessionDto(getTime(), user_id));
+    public Long getSession(Long user_id) {
+        var session = sessionRepository.findByUserId(user_id);
+        if (session == null) session = sessionRepository.save(new SessionDto(getTime(), user_id));
         return session.getId();
     }
 

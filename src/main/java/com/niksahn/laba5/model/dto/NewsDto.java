@@ -13,10 +13,6 @@ public class NewsDto {
     @Column(name = "user_id")
     private Long user_id;
 
-    @Column(name = "image")
-    @Nullable
-    private String image;
-
     @Column(name = "title")
     private String title;
 
@@ -24,14 +20,9 @@ public class NewsDto {
     @Nullable
     private String description;
 
-    @Column(name = "approved")
-    private Boolean approved;
-
-    public NewsDto(Long user_id, String image, String title, String description, Boolean approved) {
+    public NewsDto(Long user_id, String title, @Nullable String description) {
         this.user_id = user_id;
-        this.approved = approved;
         this.description = description;
-        this.image = image;
         this.title = title;
     }
 
@@ -50,10 +41,6 @@ public class NewsDto {
         user_id = user_id1;
     }
 
-    public Boolean getApproved() {
-        return approved;
-    }
-
     public String getDescription() {
         return description;
     }
@@ -62,23 +49,11 @@ public class NewsDto {
         this.description = description;
     }
 
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
     public void setTitle(String title) {
         this.title = title;
     }
 
     public String getTitle() {
         return title;
-    }
-
-    public void setApproved(Boolean approved) {
-        this.approved = approved;
     }
 }

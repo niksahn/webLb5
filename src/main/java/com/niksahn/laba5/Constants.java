@@ -7,13 +7,11 @@ public class Constants {
     /**
      * Время жизни сессии сейчас - 1 минута
      */
-    public static final Long sessionLife = 100L * 60;
+    public static final Long sessionLife = 100L ;
 
-    public Constants() {
+    public Constants() {}
 
-    }
-
-     static {
+    static {
         String filename = "./images/";
         Path pathToFile = Paths.get(filename);
         image_path = pathToFile.toAbsolutePath().toString();

@@ -1,8 +1,8 @@
 package com.niksahn.laba5.controller;
 
-import com.niksahn.laba5.manager.FileService;
-import com.niksahn.laba5.manager.SessionService;
-import com.niksahn.laba5.model.LoginResponse;
+import com.niksahn.laba5.model.Role;
+import com.niksahn.laba5.service.FileService;
+import com.niksahn.laba5.service.SessionService;
 import com.niksahn.laba5.model.RegistrationRequest;
 import com.niksahn.laba5.model.dto.UserDto;
 import com.niksahn.laba5.model.UserResponse;
@@ -58,7 +58,7 @@ public class UserController {
         } else if (!Objects.equals(user_inf.getPassword(), password)) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Неверный пароль");
         } else {
-            var session = sessionService.getNewSession(user_inf.getId());
+            var session = sessionService.getSession(user_inf.getId());
             user_inf.setEnter_сounter(user_inf.getEnter_сounter() + 1);
             userRepository.save(user_inf);
             return ResponseEntity.status(HttpStatus.OK).body(session);
@@ -84,7 +84,11 @@ public class UserController {
             }
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
         }
-        userRepository.save(new UserDto(user.email, user.login, user.password, user.role, null));
+        try {
+            userRepository.save(new UserDto(user.email, user.login, user.password, Role.user ,null));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Такой пользователь уже зарегистрирован");
+        }
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 

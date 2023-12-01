@@ -9,7 +9,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SessionRepository extends CrudRepository<SessionDto, Long> {
-   // SessionDto findAllByUserId(Long user_id);
+
+    @Query(value = "select * from sessions where user_id = :user_id", nativeQuery = true)
+    SessionDto findByUserId(Long user_id);
 
     @Modifying
     @Query(value = "delete from sessions  where :time - creation_time > :session_life", nativeQuery = true)
