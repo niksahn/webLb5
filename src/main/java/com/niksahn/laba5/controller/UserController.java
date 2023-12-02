@@ -94,16 +94,13 @@ public class UserController {
     }
 
     @CrossOrigin
-    @PostMapping(value = "/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> uploadAvatar(@RequestBody MultipartFile file, @RequestHeader("Authorization") Long session_id) {
+    @PostMapping(value = "/avatar", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> uploadAvatar(@RequestBody byte[] file, @RequestHeader("Authorization") Long session_id) {
         var auth = checkAuth(session_id, sessionService);
         if (auth != null) return auth;
         Long user_id = sessionService.getUserIdFromSession(session_id);
         var user = userRepository.findByUserId(user_id);
-        var name = avatar_path + user.getLogin();
-        if (user.getAvatar() != null) {
-            fileService.deleteImage(image_path + user.getAvatar());
-        }
+        var name = avatar_path + user.getId();
         if (!fileService.setImage(file, name)) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -144,7 +141,7 @@ public class UserController {
         if (userDto.getAvatar() == null) {
             avatar = fileService.getImage("default.png");
         } else {
-            avatar = fileService.getImage(image_path + userDto.getAvatar());
+            avatar = fileService.getImage(userDto.getAvatar());
         }
         return new UserResponse(userDto.getId(), userDto.getEmail(), userDto.getLogin(), userDto.getRole(), userDto.getEnter_сounter(), avatar);
     }

@@ -7,6 +7,7 @@ import com.niksahn.laba5.service.CourseService;
 import com.niksahn.laba5.service.FileService;
 import com.niksahn.laba5.service.SessionService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -60,7 +61,7 @@ public class CourseController {
         else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseOperation.toString());
     }
 
-    @PostMapping("/add")
+    @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     @CrossOrigin
     public ResponseEntity<?> addCourse(@RequestHeader("Authorization") Long session_id, @RequestBody AddCourseRequest request) {
         var auth = checkAuth(session_id, sessionService);

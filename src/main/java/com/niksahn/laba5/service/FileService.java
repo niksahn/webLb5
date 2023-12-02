@@ -37,10 +37,14 @@ public class FileService {
     }
 
     public boolean setImage(byte[] file, String name) {
-        try (OutputStream outputStream = Files.newOutputStream(Paths.get(image_path + "/" + name))) {
+        var file1 = new File(Paths.get(image_path + "/" + name).toString());
+        try {
+            if (!file1.exists()) file1.createNewFile();
+            OutputStream outputStream = Files.newOutputStream(Paths.get(image_path + "/" + name));
             outputStream.write(file, 0, file.length);
             return true;
         } catch (IOException e) {
+            e.printStackTrace();
             return false;
         }
     }
