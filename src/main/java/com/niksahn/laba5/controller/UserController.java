@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.Objects;
 
+import static com.niksahn.laba5.Constants.avatar_path;
 import static com.niksahn.laba5.Constants.image_path;
 import static com.niksahn.laba5.controller.Common.checkAuth;
 
@@ -99,7 +100,7 @@ public class UserController {
         if (auth != null) return auth;
         Long user_id = sessionService.getUserIdFromSession(session_id);
         var user = userRepository.findByUserId(user_id);
-        var name = file.getOriginalFilename() + "_avatar_" + user.getLogin();
+        var name = avatar_path + user.getLogin();
         if (user.getAvatar() != null) {
             fileService.deleteImage(image_path + user.getAvatar());
         }

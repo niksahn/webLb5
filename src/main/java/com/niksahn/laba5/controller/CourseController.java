@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static com.niksahn.laba5.Constants.course_path;
 import static com.niksahn.laba5.controller.Common.checkAuth;
 
 @RestController
@@ -65,8 +66,8 @@ public class CourseController {
         var auth = checkAuth(session_id, sessionService);
         if (auth != null) return auth;
         Long user_id = sessionService.getUserIdFromSession(session_id);
-        var responseOperation = courseService.addCourse(request.name, request.description, "course_" + request.name, user_id);
-        fileService.setImage(request.image, "course_" + request.name);
+        var responseOperation = courseService.addCourse(request.name, request.description, course_path + request.name, user_id);
+        fileService.setImage(request.image, course_path + request.name);
         if (Objects.equals(responseOperation, OperationRezult.Success)) return ResponseEntity.ok().body(responseOperation.toString());
         else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseOperation.toString());
     }

@@ -9,13 +9,21 @@ public class Constants {
      */
     public static final Long sessionLife = 100L * 60;
 
-    public Constants() {}
+    public Constants() {
+    }
 
     static {
         String filename = "./images/";
         Path pathToFile = Paths.get(filename);
         image_path = pathToFile.toAbsolutePath().toString();
+        avatar_path = "/avatar/";
+        course_path = "/course/";
+        news_path = "/news/";
+
     }
 
     public static String image_path;
+    public static String avatar_path;
+    public static String course_path;
+    public static String news_path;
 }
