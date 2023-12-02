@@ -51,7 +51,7 @@ public class NewsController {
             login = userRepository.findById(newsDto.getUserId()).get().getLogin();
         }
         var images = imagesRepository.findByNewsId(newsDto.getId());
-        ArrayList<byte[]> imageList = new ArrayList<>();
+        ArrayList<String> imageList = new ArrayList<>();
         images.forEach(imagePath -> imageList.add(fileService.getImage(imagePath.getImage_path())));
         return new NewsResponse(login, newsDto.getTitle(), newsDto.getDescription(), imageList);
     }

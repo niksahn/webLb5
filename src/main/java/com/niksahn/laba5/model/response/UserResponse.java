@@ -9,11 +9,12 @@ public class UserResponse {
     public String login;
     public Role role;
     public Long enterCounter;
-    public byte[] avatar;
+    public String avatar;
 
-    public UserResponse() {}
+    public UserResponse() {
+    }
 
-    public UserResponse(Long id,String email, String login, Role role, Long enterCounter, byte[] avatar) {
+    public UserResponse(Long id, String email, String login, Role role, Long enterCounter, String avatar) {
         this.email = email;
         this.role = role;
         this.login = login;

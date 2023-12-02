@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Base64;
 
 import static com.niksahn.laba5.Constants.image_path;
 
@@ -16,9 +17,10 @@ public class FileService {
     public FileService() {
     }
 
-    public byte[] getImage(String name) {
+    public String getImage(String name) {
         try {
-            return Files.readAllBytes(Paths.get(image_path + "/" + name).normalize());
+            return new String(Base64.getEncoder().encode(Files.readAllBytes(Paths.get(image_path + "/" + name).normalize())));
+
         } catch (IOException ignore) {
             ignore.printStackTrace();
             return null;

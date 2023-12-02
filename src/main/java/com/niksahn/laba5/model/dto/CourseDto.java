@@ -60,7 +60,7 @@ public class CourseDto {
         return image_path;
     }
 
-    public CourseResponse fromCourseDto(byte[] image) {
+    public CourseResponse fromCourseDto(String image) {
         return new CourseResponse(id, name, description, image);
     }
 }

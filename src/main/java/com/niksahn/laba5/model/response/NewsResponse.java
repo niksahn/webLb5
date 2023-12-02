@@ -6,12 +6,12 @@ public class NewsResponse {
     public String user_login;
     public String title;
     public String description;
-    public ArrayList<byte[]> images;
+    public ArrayList<String> images;
 
     public NewsResponse() {
     }
 
-    public NewsResponse(String userLogin, String title, String description, ArrayList<byte[]> image) {
+    public NewsResponse(String userLogin, String title, String description, ArrayList<String> image) {
         this.description = description;
         this.title = title;
         this.user_login = userLogin;

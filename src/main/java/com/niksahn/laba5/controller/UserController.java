@@ -123,7 +123,7 @@ public class UserController {
         var user = userRepository.findByUserId(user_id);
         var auth = checkAuth(session_id, sessionService);
         if (auth != null) return auth;
-        byte[] image;
+        String image;
         if (user.getAvatar() == null) {
             image = fileService.getImage("default.png");
         } else {
@@ -139,7 +139,7 @@ public class UserController {
     }
 
     public UserResponse fromUserDto(UserDto userDto) {
-        byte[] avatar;
+        String avatar;
         if (userDto.getAvatar() == null) {
             avatar = fileService.getImage("default.png");
         } else {
