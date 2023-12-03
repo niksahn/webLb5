@@ -36,12 +36,13 @@ public class FileService {
         }
     }
 
-    public boolean setImage(byte[] file, String name) {
+    public boolean setImage(String fileContent, String name) {
+        byte[] file = Base64.getDecoder().decode(fileContent);
         var file1 = new File(Paths.get(image_path + "/" + name).toString());
         try {
-            if (!file1.exists()) file1.createNewFile();
+            if (file1.exists()) file1.createNewFile();
             OutputStream outputStream = Files.newOutputStream(Paths.get(image_path + "/" + name));
-            outputStream.write(file, 0, file.length);
+            outputStream.write(file);
             return true;
         } catch (IOException e) {
             e.printStackTrace();
