@@ -1,6 +1,7 @@
 package com.niksahn.laba5.controller;
 
 import com.niksahn.laba5.model.Role;
+import com.niksahn.laba5.model.request.AvatarRequest;
 import com.niksahn.laba5.service.FileService;
 import com.niksahn.laba5.service.SessionService;
 import com.niksahn.laba5.model.request.RegistrationRequest;
@@ -16,13 +17,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.ObjectError;
 import org.springframework.validation.FieldError;
 import org.springframework.http.MediaType;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
 
 import static com.niksahn.laba5.Constants.avatar_path;
-import static com.niksahn.laba5.Constants.image_path;
 import static com.niksahn.laba5.controller.Common.checkAuth;
 
 @RestController
@@ -95,13 +94,13 @@ public class UserController {
 
     @CrossOrigin
     @PostMapping(value = "/avatar", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> uploadAvatar(@RequestBody String file, @RequestHeader("Authorization") Long session_id) {
+    public ResponseEntity<?> uploadAvatar(@RequestBody AvatarRequest file, @RequestHeader("Authorization") Long session_id) {
         var auth = checkAuth(session_id, sessionService);
         if (auth != null) return auth;
         Long user_id = sessionService.getUserIdFromSession(session_id);
         var user = userRepository.findByUserId(user_id);
         var name = avatar_path + user.getId();
-        if (!fileService.setImage(file, name)) {
+        if (!fileService.setImage(file.file, name)) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Ошибка загрузки аватара");

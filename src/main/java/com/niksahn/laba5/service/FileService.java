@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Base64;
@@ -19,8 +20,7 @@ public class FileService {
 
     public String getImage(String name) {
         try {
-            return new String(Base64.getEncoder().encode(Files.readAllBytes(Paths.get(image_path + "/" + name).normalize())));
-
+            return Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get(image_path + "/" + name).normalize()));
         } catch (IOException ignore) {
             ignore.printStackTrace();
             return null;
@@ -37,12 +37,15 @@ public class FileService {
     }
 
     public boolean setImage(String fileContent, String name) {
-        byte[] file = Base64.getDecoder().decode(fileContent);
+        String partSeparator = ",";
+        if (fileContent.contains(partSeparator)) {
+             fileContent = fileContent.split(partSeparator)[1];
+        }
+        byte[] file = Base64.getDecoder().decode(fileContent.getBytes(StandardCharsets.UTF_8));
         var file1 = new File(Paths.get(image_path + "/" + name).toString());
         try {
             if (file1.exists()) file1.createNewFile();
-            OutputStream outputStream = Files.newOutputStream(Paths.get(image_path + "/" + name));
-            outputStream.write(file);
+            Files.write(Paths.get(image_path + "/" + name), file);
             return true;
         } catch (IOException e) {
             e.printStackTrace();
