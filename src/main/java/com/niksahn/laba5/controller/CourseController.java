@@ -36,7 +36,7 @@ public class CourseController {
     @CrossOrigin
     public ResponseEntity<?> getAllCourse() {
         ArrayList<CourseResponse> courses = new ArrayList<CourseResponse>();
-        courseService.getAllCourses().forEach(course -> courses.add(course.fromCourseDto(fileService.getImage(course.getImage_path()))));
+        courseService.getAllCourses().forEach(course ->  courses.add(course.fromCourseDto(fileService.getImage(course.getImage_path()))));
         return ResponseEntity.ok().body(courses);
     }
 

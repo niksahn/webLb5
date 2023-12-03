@@ -94,7 +94,7 @@ public class UserController {
 
     @CrossOrigin
     @PostMapping(value = "/avatar", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> uploadAvatar(@RequestBody AvatarRequest file, @RequestHeader("Authorization") Long session_id) {
+    public ResponseEntity<?> uploadAvatar(@RequestHeader("Authorization") Long session_id, @RequestBody AvatarRequest file) {
         var auth = checkAuth(session_id, sessionService);
         if (auth != null) return auth;
         Long user_id = sessionService.getUserIdFromSession(session_id);

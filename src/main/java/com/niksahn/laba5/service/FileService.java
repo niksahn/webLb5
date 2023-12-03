@@ -22,6 +22,11 @@ public class FileService {
         try {
             return Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get(image_path + "/" + name).normalize()));
         } catch (IOException ignore) {
+            try {
+               return Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get(image_path + "/" + "default.png").normalize()));
+            } catch (IOException ignore2) {
+                ignore2.printStackTrace();
+            }
             ignore.printStackTrace();
             return null;
         }
@@ -37,17 +42,13 @@ public class FileService {
     }
 
     public boolean setImage(String fileContent, String name) {
-        String partSeparator = ",";
-        if (fileContent.contains(partSeparator)) {
-             fileContent = fileContent.split(partSeparator)[1];
-        }
-        byte[] file = Base64.getDecoder().decode(fileContent.getBytes(StandardCharsets.UTF_8));
-        var file1 = new File(Paths.get(image_path + "/" + name).toString());
         try {
+            byte[] file = Base64.getDecoder().decode(fileContent.getBytes(StandardCharsets.UTF_8));
+            var file1 = new File(Paths.get(image_path + "/" + name).toString());
             if (file1.exists()) file1.createNewFile();
             Files.write(Paths.get(image_path + "/" + name), file);
             return true;
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
