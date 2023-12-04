@@ -4,7 +4,6 @@ import com.niksahn.laba5.service.SessionService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-
 public class Common {
     public static ResponseEntity<String> checkAuth(Long session_id, SessionService sessionService) {
         if (!sessionService.sessionIsValid(session_id)) {

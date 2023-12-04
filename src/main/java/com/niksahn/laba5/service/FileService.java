@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Base64;
 
+import static com.niksahn.laba5.Constants.imageType;
 import static com.niksahn.laba5.Constants.image_path;
 
 @Service
@@ -18,13 +19,13 @@ public class FileService {
     public FileService() {
     }
 
-    public String getImage(String name) {
+    public String getImage(String name, String defaultName) {
         try {
-            return Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get(image_path + "/" + name).normalize()));
+            return Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get(image_path + "/" + name + imageType).normalize()));
         } catch (IOException ignore) {
             ignore.printStackTrace();
             try {
-               return Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get(image_path + "/" + "default.png").normalize()));
+                return Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get(image_path + "/" + defaultName + imageType).normalize()));
             } catch (IOException ignore2) {
                 ignore2.printStackTrace();
             }
@@ -44,9 +45,9 @@ public class FileService {
     public boolean setImage(String fileContent, String name) {
         try {
             byte[] file = Base64.getDecoder().decode(fileContent.getBytes(StandardCharsets.UTF_8));
-            var file1 = new File(Paths.get(image_path + "/" + name).toString());
+            var file1 = new File(Paths.get(image_path + "/" + name + imageType).toString());
             if (file1.exists()) file1.createNewFile();
-            Files.write(Paths.get(image_path + "/" + name), file);
+            Files.write(Paths.get(image_path + "/" + name + imageType), file);
             return true;
         } catch (Exception e) {
             e.printStackTrace();

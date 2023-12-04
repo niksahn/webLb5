@@ -26,4 +26,6 @@ public class Constants {
     public static String avatar_path;
     public static String course_path;
     public static String news_path;
+
+    public static String imageType = ".png";
 }

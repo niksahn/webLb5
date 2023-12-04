@@ -32,6 +32,7 @@ public class UserController {
     private final UserRepository userRepository;
     private final SessionService sessionService;
     private final FileService fileService;
+    private final String defaultAvatar = avatar_path + "default";
 
     @Autowired
     public UserController(UserRepository userRepository, SessionService sessionService, FileService fileService) {
@@ -62,7 +63,7 @@ public class UserController {
             var session = sessionService.getSession(user_inf.getId());
             user_inf.setEnter_сounter(user_inf.getEnter_сounter() + 1);
             userRepository.save(user_inf);
-            return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse(user_inf.getId(),session));
+            return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse(user_inf.getId(), session));
         }
     }
 
@@ -91,8 +92,8 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Такой пользователь уже зарегистрирован");
         }
         var user_id = userRepository.findByLogin(user.login).getId();
-        var session =  sessionService.getSession(user_id);
-        return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse(user_id,session));
+        var session = sessionService.getSession(user_id);
+        return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse(user_id, session));
     }
 
     @CrossOrigin
@@ -124,11 +125,7 @@ public class UserController {
         var auth = checkAuth(session_id, sessionService);
         if (auth != null) return auth;
         String image;
-        if (user.getAvatar() == null) {
-            image = fileService.getImage("default.png");
-        } else {
-            image = fileService.getImage(user.getAvatar());
-        }
+        image = fileService.getImage(user.getAvatar(), defaultAvatar);
         if (image == null) return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Ошибка загрузки аватара");
@@ -140,11 +137,7 @@ public class UserController {
 
     public UserResponse fromUserDto(UserDto userDto) {
         String avatar;
-        if (userDto.getAvatar() == null) {
-            avatar = fileService.getImage("default.png");
-        } else {
-            avatar = fileService.getImage(userDto.getAvatar());
-        }
+        avatar = fileService.getImage(userDto.getAvatar(), defaultAvatar);
         return new UserResponse(userDto.getId(), userDto.getEmail(), userDto.getLogin(), userDto.getRole(), userDto.getEnter_сounter(), avatar);
     }
 }

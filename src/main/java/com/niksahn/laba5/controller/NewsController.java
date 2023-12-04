@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
+import static com.niksahn.laba5.Constants.news_path;
+
 
 @RestController
 @CrossOrigin
@@ -22,7 +24,7 @@ public class NewsController {
     private final UserRepository userRepository;
     private final SessionService sessionService;
     private final ImagesRepository imagesRepository;
-
+    private final String defaultImg = news_path + "default";
     private final FileService fileService;
 
     private final NewsRepository newsRepository;
@@ -52,10 +54,10 @@ public class NewsController {
         }
         var images = imagesRepository.findByNewsId(newsDto.getId());
         ArrayList<String> imageList = new ArrayList<>();
-        images.forEach(imagePath -> imageList.add(fileService.getImage(imagePath.getImage_path())));
-        if (imageList.size()==0) {
-              imageList.add(fileService.getImage("default.png"));
-        };
+        images.forEach(imagePath -> imageList.add(fileService.getImage(imagePath.getImage_path(), defaultImg)));
+        if (imageList.size() == 0) {
+            imageList.add(fileService.getImage("default",defaultImg));
+        }
         return new NewsResponse(login, newsDto.getTitle(), newsDto.getDescription(), imageList);
     }
 

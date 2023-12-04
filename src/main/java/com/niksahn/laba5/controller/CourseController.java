@@ -21,7 +21,7 @@ import static com.niksahn.laba5.controller.Common.checkAuth;
 @CrossOrigin
 @RequestMapping("/course")
 public class CourseController {
-
+    private final String defaultImg = course_path + "default";
     private final CourseService courseService;
     private final SessionService sessionService;
     private final FileService fileService;
@@ -36,7 +36,7 @@ public class CourseController {
     @CrossOrigin
     public ResponseEntity<?> getAllCourse() {
         ArrayList<CourseResponse> courses = new ArrayList<CourseResponse>();
-        courseService.getAllCourses().forEach(course ->  courses.add(course.fromCourseDto(fileService.getImage(course.getImage_path()))));
+        courseService.getAllCourses().forEach(course -> courses.add(course.fromCourseDto(fileService.getImage(course.getImage_path(), defaultImg))));
         return ResponseEntity.ok().body(courses);
     }
 
@@ -46,7 +46,7 @@ public class CourseController {
         var auth = checkAuth(session_id, sessionService);
         if (auth != null) return auth;
         ArrayList<CourseResponse> courses = new ArrayList<CourseResponse>();
-        courseService.getUserCourses(user_id).forEach(course -> courses.add(course.fromCourseDto(fileService.getImage(course.getImage_path()))));
+        courseService.getUserCourses(user_id).forEach(course -> courses.add(course.fromCourseDto(fileService.getImage(course.getImage_path(), defaultImg))));
         return ResponseEntity.ok().body(courses);
     }
 
