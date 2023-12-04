@@ -68,7 +68,7 @@ public class UserController {
     }
 
     @CrossOrigin
-    @PostMapping(value = "/logout")
+    @GetMapping(value = "/logout", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> logout(@RequestHeader("Authorization") Long session_id) {
         sessionService.deleteSession(session_id);
         return ResponseEntity.status(HttpStatus.OK).body(null);
