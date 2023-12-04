@@ -45,6 +45,15 @@ public class CourseService {
         return OperationRezult.Success;
     }
 
+    public OperationRezult delCourseToUser(Long cur_user_id, Long user_id, Long course_id) {
+        var user = userRepository.findByUserId(user_id);
+        if (!Objects.equals(cur_user_id, user_id) && user.getRole() != Role.admin) return OperationRezult.No_Right;
+        var course = userCourseRepository.getCourseByUserIdCourseId(user_id, course_id);
+        if (course == null) return OperationRezult.Internal_Error;
+        userCourseRepository.deleteById(course.getId());
+        return OperationRezult.Success;
+    }
+
     public OperationRezult addCourse(String name, String description, String image_path, Long user_id) {
         var user = userRepository.findByUserId(user_id);
         if (user.getRole() == Role.admin || user.getRole() == Role.moderator) {

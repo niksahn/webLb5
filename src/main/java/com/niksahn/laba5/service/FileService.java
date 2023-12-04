@@ -22,12 +22,12 @@ public class FileService {
         try {
             return Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get(image_path + "/" + name).normalize()));
         } catch (IOException ignore) {
+            ignore.printStackTrace();
             try {
                return Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get(image_path + "/" + "default.png").normalize()));
             } catch (IOException ignore2) {
                 ignore2.printStackTrace();
             }
-            ignore.printStackTrace();
             return null;
         }
     }

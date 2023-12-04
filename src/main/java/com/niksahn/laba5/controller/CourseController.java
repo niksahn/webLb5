@@ -61,6 +61,17 @@ public class CourseController {
         else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseOperation.toString());
     }
 
+    @GetMapping("/user/delete")
+    @CrossOrigin
+    public ResponseEntity<?> delUserCourse(@RequestHeader("Authorization") Long session_id, @RequestParam Long course_id, @RequestParam Long user_id) {
+        var auth = checkAuth(session_id, sessionService);
+        Long cur_user_id = sessionService.getUserIdFromSession(session_id);
+        if (auth != null) return auth;
+        var responseOperation = courseService.delCourseToUser(cur_user_id, user_id, course_id);
+        if (Objects.equals(responseOperation, OperationRezult.Success)) return ResponseEntity.ok().body(responseOperation.toString());
+        else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseOperation.toString());
+    }
+
     @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     @CrossOrigin
     public ResponseEntity<?> addCourse(@RequestHeader("Authorization") Long session_id, @RequestBody AddCourseRequest request) {
