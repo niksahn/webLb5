@@ -3,7 +3,9 @@ package com.niksahn.laba5.service;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -23,11 +25,11 @@ public class FileService {
         try {
             return Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get(image_path + "/" + name + imageType).normalize()));
         } catch (IOException ignore) {
-            ignore.printStackTrace();
+            // ignore.printStackTrace();
             try {
                 return Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get(image_path + "/" + defaultName + imageType).normalize()));
-            } catch (IOException ignore2) {
-                ignore2.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
             return null;
         }
@@ -45,8 +47,6 @@ public class FileService {
     public boolean setImage(String fileContent, String name) {
         try {
             byte[] file = Base64.getDecoder().decode(fileContent.getBytes(StandardCharsets.UTF_8));
-            var file1 = new File(Paths.get(image_path + "/" + name + imageType).toString());
-            if (file1.exists()) file1.createNewFile();
             Files.write(Paths.get(image_path + "/" + name + imageType), file);
             return true;
         } catch (Exception e) {
