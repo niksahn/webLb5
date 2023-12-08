@@ -50,7 +50,7 @@ public class CourseController {
         return ResponseEntity.ok().body(courses);
     }
 
-    @GetMapping(value = "/user/add", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/user/add")
     @CrossOrigin
     public ResponseEntity<?> addUserCourse(@RequestHeader("Authorization") Long session_id, @RequestParam Long course_id, @RequestParam Long user_id) {
         var auth = checkAuth(session_id, sessionService);
@@ -61,7 +61,7 @@ public class CourseController {
         else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseOperation.toString());
     }
 
-    @GetMapping(value = "/user/delete", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/user/delete")
     @CrossOrigin
     public ResponseEntity<?> delUserCourse(@RequestHeader("Authorization") Long session_id, @RequestParam Long course_id, @RequestParam Long user_id) {
         var auth = checkAuth(session_id, sessionService);
