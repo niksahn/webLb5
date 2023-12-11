@@ -4,6 +4,8 @@ import com.niksahn.laba5.model.response.CourseResponse;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+
 @Entity
 @Table(name = "course")
 public class CourseDto {
@@ -60,7 +62,7 @@ public class CourseDto {
         return image_path;
     }
 
-    public CourseResponse fromCourseDto(String image) {
+    public CourseResponse fromCourseDto(ArrayList<String> image) {
         return new CourseResponse(id, name, description, image);
     }
 }

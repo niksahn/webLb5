@@ -19,6 +19,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.validation.FieldError;
 import org.springframework.http.MediaType;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -103,8 +104,8 @@ public class UserController {
         if (auth != null) return auth;
         Long user_id = sessionService.getUserIdFromSession(session_id);
         var user = userRepository.findByUserId(user_id);
-        var name = avatar_path + user.getId();
-        if (!fileService.setImage(file.file, name)) {
+        var name = fileService.setImage(file.file, avatar_path + user.getId());
+        if (name == null) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Ошибка загрузки аватара");
@@ -124,7 +125,7 @@ public class UserController {
         var user = userRepository.findByUserId(user_id);
         var auth = checkAuth(session_id, sessionService);
         if (auth != null) return auth;
-        String image;
+        ArrayList<String> image;
         image = fileService.getImage(user.getAvatar(), defaultAvatar);
         if (image == null) return ResponseEntity
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -136,7 +137,7 @@ public class UserController {
     }
 
     public UserResponse fromUserDto(UserDto userDto) {
-        String avatar;
+        ArrayList<String> avatar;
         avatar = fileService.getImage(userDto.getAvatar(), defaultAvatar);
         return new UserResponse(userDto.getId(), userDto.getEmail(), userDto.getLogin(), userDto.getRole(), userDto.getEnter_сounter(), avatar);
     }

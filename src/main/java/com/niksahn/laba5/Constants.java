@@ -7,7 +7,7 @@ public class Constants {
     /**
      * Время жизни сессии сейчас - 1 минута
      */
-    public static final Long sessionLife = 100L * 60;
+    public static final Long sessionLife = 100*60L;
 
     public Constants() {
     }
@@ -27,5 +27,5 @@ public class Constants {
     public static String course_path;
     public static String news_path;
 
-    public static String imageType = ".png";
+    public static String defaultImageType = ".png";
 }

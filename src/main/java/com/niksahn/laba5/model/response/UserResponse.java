@@ -2,6 +2,8 @@ package com.niksahn.laba5.model.response;
 
 import com.niksahn.laba5.model.Role;
 
+import java.util.ArrayList;
+
 public class UserResponse {
 
     public Long id;
@@ -9,12 +11,12 @@ public class UserResponse {
     public String login;
     public Role role;
     public Long enterCounter;
-    public String avatar;
+    public ArrayList<String> avatar;
 
     public UserResponse() {
     }
 
-    public UserResponse(Long id, String email, String login, Role role, Long enterCounter, String avatar) {
+    public UserResponse(Long id, String email, String login, Role role, Long enterCounter, ArrayList<String> avatar) {
         this.email = email;
         this.role = role;
         this.login = login;
