@@ -3,6 +3,7 @@ package com.niksahn.laba5.model.response;
 import java.util.ArrayList;
 
 public class NewsResponse {
+    public Long id;
     public String user_login;
     public String title;
     public String description;
@@ -11,7 +12,8 @@ public class NewsResponse {
     public NewsResponse() {
     }
 
-    public NewsResponse(String userLogin, String title, String description, ArrayList<ArrayList<String>> image) {
+    public NewsResponse(Long id,String userLogin, String title, String description, ArrayList<ArrayList<String>> image) {
+        this.id = id;
         this.description = description;
         this.title = title;
         this.user_login = userLogin;

@@ -8,18 +8,23 @@ import com.niksahn.laba5.repository.CourseRepository;
 import com.niksahn.laba5.repository.UserCourseRepository;
 import com.niksahn.laba5.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Objects;
 
+import static com.niksahn.laba5.Constants.course_path;
+
 @Service
 public class CourseService {
     private final UserRepository userRepository;
+    private final FileService fileService;
     private final CourseRepository courseRepository;
     private final UserCourseRepository userCourseRepository;
 
-    public CourseService(UserRepository userRepository, CourseRepository courseRepository, UserCourseRepository userCourseRepository) {
+    public CourseService(UserRepository userRepository, FileService fileService, CourseRepository courseRepository, UserCourseRepository userCourseRepository) {
         this.userRepository = userRepository;
+        this.fileService = fileService;
         this.courseRepository = courseRepository;
         this.userCourseRepository = userCourseRepository;
     }
@@ -54,10 +59,25 @@ public class CourseService {
         return OperationRezult.Success;
     }
 
-    public OperationRezult addCourse(String name, String description, String image_path, Long user_id) {
+    @Transactional
+    public OperationRezult addCourse(String name, String description, String image, Long user_id) {
+        var file_name = fileService.setImage(image, course_path + name);
         var user = userRepository.findByUserId(user_id);
         if (user.getRole() == Role.admin || user.getRole() == Role.moderator) {
-            courseRepository.save(new CourseDto(name, description, image_path));
+            courseRepository.save(new CourseDto(name, description, file_name));
+            return OperationRezult.Success;
+        } else return OperationRezult.No_Right;
+    }
+
+    @Transactional
+    public OperationRezult editCourse(Long id, String name, String description, String image, Long user_id) {
+        var user = userRepository.findByUserId(user_id);
+        var course = courseRepository.findById(id);
+        if (course.isEmpty()) return OperationRezult.Not_In_DataBase;
+        if (user.getRole() == Role.admin || user.getRole() == Role.moderator) {
+            fileService.deleteImage(course.get().getImage_path());
+            var file_name = fileService.setImage(image, course_path + name);
+            courseRepository.save(new CourseDto(id, name, description, file_name));
             return OperationRezult.Success;
         } else return OperationRezult.No_Right;
     }

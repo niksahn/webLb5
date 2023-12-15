@@ -34,6 +34,13 @@ public class CourseDto {
         this.image_path = image_path;
     }
 
+    public CourseDto(Long id, String name, @Nullable String description, String image_path) {
+        this.description = description;
+        this.id = id;
+        this.name = name;
+        this.image_path = image_path;
+    }
+
     public void setDescription(@Nullable String description) {
         this.description = description;
     }
@@ -58,6 +65,7 @@ public class CourseDto {
     public void setImage_path(String image_path) {
         this.image_path = image_path;
     }
+
     public String getImage_path() {
         return image_path;
     }

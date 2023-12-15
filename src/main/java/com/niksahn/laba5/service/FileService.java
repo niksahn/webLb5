@@ -10,7 +10,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.HashMap;
 
 import static com.niksahn.laba5.Constants.*;
 
@@ -26,7 +25,6 @@ public class FileService {
             a.add(Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get(image_path + "/" + name).normalize())));
             return a;
         } catch (Exception ignore) {
-            // ignore.printStackTrace();
             try {
                 a.add(defaultImageType);
                 a.add(Base64.getEncoder().encodeToString(Files.readAllBytes(Paths.get(image_path + "/" + defaultName + defaultImageType).normalize())));
@@ -50,7 +48,7 @@ public class FileService {
     public String setImage(String fileContent, String name) {
         try {
             var image = fileContent.split(",");
-            String imageType = "." + image[0].split("/|;")[1];
+            String imageType = image[0].split("/|;")[1];
             byte[] file = Base64.getDecoder().decode(image[1].getBytes(StandardCharsets.UTF_8));
             Files.write(Paths.get(image_path + "/" + name + imageType), file);
             return name + imageType;
@@ -62,7 +60,7 @@ public class FileService {
 
     public boolean deleteImage(String name) {
         try {
-            Files.deleteIfExists(Paths.get(image_path + "/" + name));
+            Files.deleteIfExists(Paths.get(name));
             return true;
         } catch (Exception e) {
             return false;

@@ -26,6 +26,13 @@ public class NewsDto {
         this.title = title;
     }
 
+    public NewsDto(Long id, Long user_id, String title, @Nullable String description) {
+        this.user_id = user_id;
+        this.description = description;
+        this.id = id;
+        this.title = title;
+    }
+
     public NewsDto() {
     }
 
