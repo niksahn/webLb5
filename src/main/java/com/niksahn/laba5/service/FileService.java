@@ -48,7 +48,7 @@ public class FileService {
     public String setImage(String fileContent, String name) {
         try {
             var image = fileContent.split(",");
-            String imageType = image[0].split("/|;")[1];
+            String imageType = "." + image[0].split("/|;")[1];
             byte[] file = Base64.getDecoder().decode(image[1].getBytes(StandardCharsets.UTF_8));
             Files.write(Paths.get(image_path + "/" + name + imageType), file);
             return name + imageType;
