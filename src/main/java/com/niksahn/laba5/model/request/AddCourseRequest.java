@@ -5,15 +5,12 @@ public class AddCourseRequest {
     public String description;
     public String image;
 
-    public Long user_id;
-
     public AddCourseRequest() {
     }
 
-    public AddCourseRequest(String name, String description, String image, Long user_id) {
+    public AddCourseRequest(String name, String description, String image) {
         this.name = name;
         this.description = description;
         this.image = image;
-        this.user_id = user_id;
     }
 }

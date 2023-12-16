@@ -76,8 +76,8 @@ public class CourseController {
     @CrossOrigin
     public ResponseEntity<?> addCourse(@RequestHeader("Authorization") Long session_id, @RequestBody AddCourseRequest request) {
         var auth = checkAuth(session_id, sessionService);
+        Long user_id =sessionService.getUserIdFromSession(session_id);
         if (auth != null) return auth;
-        Long user_id = request.user_id;
         var responseOperation = courseService.addCourse(request.name, request.description, request.image, user_id);
         if (Objects.equals(responseOperation, OperationRezult.Success)) return ResponseEntity.ok().body(responseOperation.toString());
         else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseOperation.toString());
@@ -88,7 +88,7 @@ public class CourseController {
     public ResponseEntity<?> editCourse(@RequestHeader("Authorization") Long session_id, @RequestBody AddCourseRequest request, @RequestParam Long id) {
         var auth = checkAuth(session_id, sessionService);
         if (auth != null) return auth;
-        Long user_id = request.user_id;
+        Long user_id = sessionService.getUserIdFromSession(session_id);
         var responseOperation = courseService.editCourse(id, request.name, request.description, request.image, user_id);
         if (Objects.equals(responseOperation, OperationRezult.Success)) return ResponseEntity.ok().body(responseOperation.toString());
         else return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseOperation.toString());
