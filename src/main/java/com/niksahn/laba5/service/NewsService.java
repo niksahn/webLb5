@@ -69,4 +69,21 @@ public class NewsService {
         );
         return OperationRezult.Success;
     }
+
+    @Transactional
+    public OperationRezult dellNew(Long new_id, Long user_id) {
+        var user = userRepository.findByUserId(user_id);
+        var news = newsRepository.findById(new_id);
+        if (user.getRole() == Role.admin || user.getRole() == Role.moderator) {
+        } else return OperationRezult.No_Right;
+        if (news.isEmpty()) return OperationRezult.Not_In_DataBase;
+        var images = imagesRepository.findByNewsId(new_id);
+        images.forEach(it -> {
+                    fileService.deleteImage(it.getImage_path());
+                    imagesRepository.delete(it);
+                }
+        );
+        return OperationRezult.Success;
+    }
+
 }

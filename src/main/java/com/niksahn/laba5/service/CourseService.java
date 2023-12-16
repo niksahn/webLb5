@@ -1,5 +1,6 @@
 package com.niksahn.laba5.service;
 
+import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
 import com.niksahn.laba5.model.OperationRezult;
 import com.niksahn.laba5.model.Role;
 import com.niksahn.laba5.model.dto.CourseDto;
@@ -41,6 +42,7 @@ public class CourseService {
         return coursesDto;
     }
 
+    @Transactional
     public OperationRezult addCourseToUser(Long cur_user_id, Long user_id, Long course_id) {
         var user = userRepository.findByUserId(user_id);
         if (!Objects.equals(cur_user_id, user_id) && user.getRole() != Role.admin) return OperationRezult.No_Right;
@@ -50,6 +52,18 @@ public class CourseService {
         return OperationRezult.Success;
     }
 
+    @Transactional
+    public OperationRezult dellCourse(Long course_id, Long user_id) {
+        var user = userRepository.findByUserId(user_id);
+        if (user.getRole() != Role.admin && user.getRole() != Role.moderator) return OperationRezult.No_Right;
+        var course = courseRepository.findById(course_id);
+        if (course.isEmpty()) return OperationRezult.Not_In_DataBase;
+        fileService.deleteImage(course.get().getImage_path());
+        courseRepository.deleteById(course_id);
+        return OperationRezult.Success;
+    }
+
+    @Transactional
     public OperationRezult delCourseToUser(Long cur_user_id, Long user_id, Long course_id) {
         var user = userRepository.findByUserId(user_id);
         if (!Objects.equals(cur_user_id, user_id) && user.getRole() != Role.admin) return OperationRezult.No_Right;
@@ -64,7 +78,11 @@ public class CourseService {
         var file_name = fileService.setImage(image, course_path + name);
         var user = userRepository.findByUserId(user_id);
         if (user.getRole() == Role.admin || user.getRole() == Role.moderator) {
-            courseRepository.save(new CourseDto(name, description, file_name));
+            try {
+                courseRepository.save(new CourseDto(name, description, file_name));
+            } catch (Exception e) {
+                return OperationRezult.Repeat_In_Db;
+            }
             return OperationRezult.Success;
         } else return OperationRezult.No_Right;
     }
@@ -75,9 +93,13 @@ public class CourseService {
         var course = courseRepository.findById(id);
         if (course.isEmpty()) return OperationRezult.Not_In_DataBase;
         if (user.getRole() == Role.admin || user.getRole() == Role.moderator) {
-            fileService.deleteImage(course.get().getImage_path());
             var file_name = fileService.setImage(image, course_path + name);
-            courseRepository.save(new CourseDto(id, name, description, file_name));
+            try {
+                courseRepository.save(new CourseDto(id,name, description, file_name));
+            } catch (Exception e) {
+                return OperationRezult.Repeat_In_Db;
+            }
+            fileService.deleteImage(course.get().getImage_path());
             return OperationRezult.Success;
         } else return OperationRezult.No_Right;
     }

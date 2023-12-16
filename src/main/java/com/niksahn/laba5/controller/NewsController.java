@@ -12,6 +12,7 @@ import com.niksahn.laba5.repository.NewsRepository;
 import com.niksahn.laba5.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,24 +54,35 @@ public class NewsController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
-    @PostMapping("/add")
+    @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     @CrossOrigin
     public ResponseEntity<?> addNew(@RequestHeader("Authorization") Long session_id, @RequestBody AddNewsRequest request) {
         var auth = checkAuth(session_id, sessionService);
         if (auth != null) return auth;
         var operation = newsService.addNew(request.title, request.description, request.images, request.user_id);
-        if (operation == OperationRezult.No_Right) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Нет пользовательских прав");
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        if (operation == OperationRezult.Success) return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(operation.toString());
     }
 
-    @PostMapping("/edit")
+    @PostMapping(value = "/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
     @CrossOrigin
     public ResponseEntity<?> editNew(@RequestHeader("Authorization") Long session_id, @RequestBody AddNewsRequest request, @RequestParam Long id) {
         var auth = checkAuth(session_id, sessionService);
         if (auth != null) return auth;
         var operation = newsService.editNew(id, request.title, request.description, request.images, request.user_id);
-        if (operation == OperationRezult.No_Right) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Нет пользовательских прав");
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        if (operation == OperationRezult.Success) return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(operation.toString());
+    }
+
+    @PostMapping("/delete")
+    @CrossOrigin
+    public ResponseEntity<?> dellNew(@RequestHeader("Authorization") Long session_id, @RequestParam Long id) {
+        var auth = checkAuth(session_id, sessionService);
+        if (auth != null) return auth;
+        var user_id = sessionService.getUserIdFromSession(session_id);
+        var operation = newsService.dellNew(id, user_id);
+        if (operation == OperationRezult.Success) return ResponseEntity.status(HttpStatus.OK).body(null);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(operation.toString());
     }
 
     NewsResponse fromNewsDto(NewsDto newsDto) {
