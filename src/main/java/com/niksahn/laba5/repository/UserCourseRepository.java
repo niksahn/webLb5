@@ -15,4 +15,11 @@ public interface UserCourseRepository extends CrudRepository<UserCoursesDto, Lon
 
     @Query(value = "select * from user_courses where  user_id = :user_id and course_id = :course_id", nativeQuery = true)
     UserCoursesDto getCourseByUserIdCourseId(Long user_id, Long course_id);
+
+    @Query(value = "delete * from user_courses where  user_id = :user_id", nativeQuery = true)
+    Void dellByUserId(Long user_id);
+
+    @Query(value = "delete * from user_courses where  course_id = :course_id", nativeQuery = true)
+    Void dellByCourseId(Long course_id);
+
 }

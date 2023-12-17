@@ -7,6 +7,8 @@ import com.niksahn.laba5.model.request.EditUserRequest;
 import com.niksahn.laba5.model.response.AllUsers;
 import com.niksahn.laba5.model.response.LoginResponse;
 import com.niksahn.laba5.model.response.RegistrationResponse;
+import com.niksahn.laba5.repository.NewsRepository;
+import com.niksahn.laba5.repository.UserCourseRepository;
 import com.niksahn.laba5.service.FileService;
 import com.niksahn.laba5.service.SessionService;
 import com.niksahn.laba5.model.request.RegistrationRequest;
@@ -37,13 +39,18 @@ public class UserController {
     private final UserRepository userRepository;
     private final SessionService sessionService;
     private final FileService fileService;
+
+    private final NewsRepository newsRepository;
+    private final UserCourseRepository userCourseRepository;
     private final String defaultAvatar = avatar_path + "default";
 
     @Autowired
-    public UserController(UserRepository userRepository, SessionService sessionService, FileService fileService) {
+    public UserController(UserRepository userRepository, SessionService sessionService, FileService fileService, NewsRepository newsRepository, UserCourseRepository userCourseRepository) {
         this.userRepository = userRepository;
         this.sessionService = sessionService;
         this.fileService = fileService;
+        this.newsRepository = newsRepository;
+        this.userCourseRepository = userCourseRepository;
     }
 
     @GetMapping(value = "/info")
@@ -94,6 +101,8 @@ public class UserController {
         var user = userRepository.findByUserId(userAdmin_id);
         if (user.getRole() != Role.admin) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(OperationRezult.No_Right.toString());
         userRepository.deleteById(user_id);
+        userCourseRepository.dellByUserId(user_id);
+        newsRepository.dellByUserId(user_id);
         return ResponseEntity.status(HttpStatus.OK).body(OperationRezult.Success.toString());
     }
 

@@ -60,6 +60,7 @@ public class CourseService {
         if (course.isEmpty()) return OperationRezult.Not_In_DataBase;
         fileService.deleteImage(course.get().getImage_path());
         courseRepository.deleteById(course_id);
+        userCourseRepository.dellByCourseId(course_id);
         return OperationRezult.Success;
     }
 
@@ -93,7 +94,7 @@ public class CourseService {
         if (user.getRole() == Role.admin || user.getRole() == Role.moderator) {
             var file_name = fileService.setImage(image, course_path + name);
             try {
-                courseRepository.save(new CourseDto(id,name, description, file_name));
+                courseRepository.save(new CourseDto(id, name, description, file_name));
             } catch (Exception e) {
                 return OperationRezult.Repeat_In_Db;
             }
