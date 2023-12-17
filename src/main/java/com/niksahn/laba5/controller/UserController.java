@@ -105,9 +105,9 @@ public class UserController {
         if (auth != null) return auth;
         var userAdmin_id = sessionService.getUserIdFromSession(session_id);
         var user = userRepository.findByUserId(userAdmin_id);
-        var edit_user = userRepository.findByUserId(user_id);
         if (user.getRole() != Role.admin) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(OperationRezult.No_Right.toString());
-        userRepository.save(new UserDto(user_id, request.email, request.login, request.password, request.role, edit_user.getAvatar()));
+        var name = fileService.setImage(request.avatar, avatar_path + user.getId());
+        userRepository.save(new UserDto(user_id, request.email, request.login, request.password, request.role, name));
         return ResponseEntity.status(HttpStatus.OK).body(OperationRezult.Success.toString());
     }
 

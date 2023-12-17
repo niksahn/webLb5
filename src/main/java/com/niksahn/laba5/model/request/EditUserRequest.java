@@ -9,14 +9,17 @@ public class EditUserRequest {
     public Role role;
     public Long enter_сounter;
 
+    public String avatar;
+
     EditUserRequest() {
     }
 
-    public EditUserRequest(String email, String login, String password, Role role, Long enter_сounter) {
+    public EditUserRequest(String email, String login, String password, Role role, Long enter_сounter, String avatar) {
         this.email = email;
         this.password = password;
         this.role = role;
         this.login = login;
         this.enter_сounter = enter_сounter;
+        this.avatar = avatar;
     }
 }
