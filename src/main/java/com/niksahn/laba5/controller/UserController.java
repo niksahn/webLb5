@@ -3,6 +3,7 @@ package com.niksahn.laba5.controller;
 import com.niksahn.laba5.model.Role;
 import com.niksahn.laba5.model.request.AvatarRequest;
 import com.niksahn.laba5.model.response.LoginResponse;
+import com.niksahn.laba5.model.response.RegistrationResponse;
 import com.niksahn.laba5.service.FileService;
 import com.niksahn.laba5.service.SessionService;
 import com.niksahn.laba5.model.request.RegistrationRequest;
@@ -64,7 +65,7 @@ public class UserController {
             var session = sessionService.getSession(user_inf.getId());
             user_inf.setEnter_сounter(user_inf.getEnter_сounter() + 1);
             userRepository.save(user_inf);
-            return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse(user_inf.getId(), session));
+            return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse(user_inf.getId(), session, user_inf.getRole()));
         }
     }
 
@@ -94,7 +95,7 @@ public class UserController {
         }
         var user_id = userRepository.findByLogin(user.login).getId();
         var session = sessionService.getSession(user_id);
-        return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse(user_id, session));
+        return ResponseEntity.status(HttpStatus.OK).body(new RegistrationResponse(user_id, session));
     }
 
     @CrossOrigin
