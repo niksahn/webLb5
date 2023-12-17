@@ -32,7 +32,6 @@ public class NewsService {
         this.newsRepository = newsRepository;
     }
 
-    @Transactional
     public OperationRezult addNew(String name, String description, ArrayList<String> images, Long user_id) {
         var user = userRepository.findByUserId(user_id);
         NewsDto news;
@@ -48,7 +47,6 @@ public class NewsService {
         return OperationRezult.Success;
     }
 
-    @Transactional
     public OperationRezult editNew(Long id, String name, String description, ArrayList<String> images, Long user_id) {
         var user = userRepository.findByUserId(user_id);
         var newD = newsRepository.findById(id);

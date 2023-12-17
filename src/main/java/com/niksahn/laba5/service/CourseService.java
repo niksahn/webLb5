@@ -73,7 +73,6 @@ public class CourseService {
         return OperationRezult.Success;
     }
 
-    @Transactional
     public OperationRezult addCourse(String name, String description, String image, Long user_id) {
         var file_name = fileService.setImage(image, course_path + name);
         var user = userRepository.findByUserId(user_id);
@@ -87,7 +86,6 @@ public class CourseService {
         } else return OperationRezult.No_Right;
     }
 
-    @Transactional
     public OperationRezult editCourse(Long id, String name, String description, String image, Long user_id) {
         var user = userRepository.findByUserId(user_id);
         var course = courseRepository.findById(id);

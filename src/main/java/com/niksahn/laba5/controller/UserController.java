@@ -1,7 +1,10 @@
 package com.niksahn.laba5.controller;
 
+import com.niksahn.laba5.model.OperationRezult;
 import com.niksahn.laba5.model.Role;
 import com.niksahn.laba5.model.request.AvatarRequest;
+import com.niksahn.laba5.model.request.EditUserRequest;
+import com.niksahn.laba5.model.response.AllUsers;
 import com.niksahn.laba5.model.response.LoginResponse;
 import com.niksahn.laba5.model.response.RegistrationResponse;
 import com.niksahn.laba5.service.FileService;
@@ -67,6 +70,45 @@ public class UserController {
             userRepository.save(user_inf);
             return ResponseEntity.status(HttpStatus.OK).body(new LoginResponse(user_inf.getId(), session, user_inf.getRole()));
         }
+    }
+
+    @GetMapping(value = "/all")
+    @CrossOrigin
+    public ResponseEntity<?> getAll(@RequestHeader("Authorization") Long session_id) {
+        var auth = checkAuth(session_id, sessionService);
+        if (auth != null) return auth;
+        var user_id = sessionService.getUserIdFromSession(session_id);
+        var user = userRepository.findByUserId(user_id);
+        if (user.getRole() != Role.admin) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(OperationRezult.No_Right.toString());
+        ArrayList<UserDto> users = new ArrayList<>();
+        userRepository.findAll().forEach(users::add);
+        return ResponseEntity.status(HttpStatus.OK).body(new AllUsers(users));
+    }
+
+    @PostMapping(value = "/delete")
+    @CrossOrigin
+    public ResponseEntity<?> dellUser(@RequestHeader("Authorization") Long session_id, @RequestParam Long user_id) {
+        var auth = checkAuth(session_id, sessionService);
+        if (auth != null) return auth;
+        var userAdmin_id = sessionService.getUserIdFromSession(session_id);
+        var user = userRepository.findByUserId(userAdmin_id);
+        if (user.getRole() != Role.admin) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(OperationRezult.No_Right.toString());
+        userRepository.deleteById(user_id);
+        return ResponseEntity.status(HttpStatus.OK).body(OperationRezult.Success.toString());
+    }
+
+
+    @PostMapping(value = "/edit")
+    @CrossOrigin
+    public ResponseEntity<?> editUser(@RequestHeader("Authorization") Long session_id, @RequestParam Long user_id, @RequestBody EditUserRequest request) {
+        var auth = checkAuth(session_id, sessionService);
+        if (auth != null) return auth;
+        var userAdmin_id = sessionService.getUserIdFromSession(session_id);
+        var user = userRepository.findByUserId(userAdmin_id);
+        var edit_user = userRepository.findByUserId(user_id);
+        if (user.getRole() != Role.admin) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(OperationRezult.No_Right.toString());
+        userRepository.save(new UserDto(user_id, request.email, request.login, request.password, request.role, edit_user.getAvatar()));
+        return ResponseEntity.status(HttpStatus.OK).body(OperationRezult.Success.toString());
     }
 
     @CrossOrigin
