@@ -2,6 +2,7 @@ package com.niksahn.laba5.repository;
 
 import com.niksahn.laba5.model.dto.CourseDto;
 import com.niksahn.laba5.model.dto.UserCoursesDto;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -16,10 +17,12 @@ public interface UserCourseRepository extends CrudRepository<UserCoursesDto, Lon
     @Query(value = "select * from user_courses where  user_id = :user_id and course_id = :course_id", nativeQuery = true)
     UserCoursesDto getCourseByUserIdCourseId(Long user_id, Long course_id);
 
-    @Query(value = "delete * from user_courses where  user_id = :user_id", nativeQuery = true)
-    Void dellByUserId(Long user_id);
+    @Modifying
+    @Query(value = "delete from user_courses where user_id = :user_id", nativeQuery = true)
+    void dellByUserId(Long user_id);
 
-    @Query(value = "delete * from user_courses where  course_id = :course_id", nativeQuery = true)
-    Void dellByCourseId(Long course_id);
+    @Modifying
+    @Query(value = "delete from user_courses where course_id = :course_id", nativeQuery = true)
+    void dellByCourseId(Long course_id);
 
 }
