@@ -40,7 +40,7 @@ public class NewsService {
             news = newsRepository.save(new NewsDto(user_id, name, description));
         } else return OperationRezult.No_Right;
         images.forEach(it -> {
-                    String nameFile = name + "_" + Random.from(RandomGenerator.getDefault()).nextLong();
+                    String nameFile = news.getId() + "_" + Random.from(RandomGenerator.getDefault()).nextLong();
                     var file = fileService.setImage(it, nameFile);
                     imagesRepository.save(new ImageNewsDto(file, news.getId()));
                 }
