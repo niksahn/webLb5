@@ -87,8 +87,12 @@ public class UserController {
         var user_id = sessionService.getUserIdFromSession(session_id);
         var user = userRepository.findByUserId(user_id);
         if (user.getRole() != Role.admin) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(OperationRezult.No_Right.toString());
-        ArrayList<UserDto> users = new ArrayList<>();
-        userRepository.findAll().forEach(users::add);
+        ArrayList<AllUsers> users = new ArrayList<>();
+        userRepository.findAll().forEach(it ->
+        {
+            var image = fileService.getImage(it.getAvatar(), defaultAvatar);
+            users.add(new AllUsers(it.getId(), it.getEmail(), it.getLogin(), it.getPassword(), it.getRole(), image));
+        });
         return ResponseEntity.status(HttpStatus.OK).body(users);
     }
 
