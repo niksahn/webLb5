@@ -11,12 +11,12 @@ import jakarta.persistence.Lob;
 import java.util.ArrayList;
 
 public class AllUsers {
-    private Long id;
-    private String email;
-    private String login;
-    private String password;
-    private Role role;
-    private ArrayList<String> avatar;
+    public Long id;
+    public String email;
+    public String login;
+    public String password;
+    public Role role;
+    public ArrayList<String> avatar;
 
     public AllUsers() {
     }

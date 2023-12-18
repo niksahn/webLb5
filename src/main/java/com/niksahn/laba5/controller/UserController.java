@@ -87,7 +87,7 @@ public class UserController {
         var user_id = sessionService.getUserIdFromSession(session_id);
         var user = userRepository.findByUserId(user_id);
         if (user.getRole() != Role.admin) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(OperationRezult.No_Right.toString());
-        ArrayList<AllUsers> users = new ArrayList<>();
+        ArrayList<AllUsers> users = new ArrayList<AllUsers>();
         userRepository.findAll().forEach(it ->
         {
             var image = fileService.getImage(it.getAvatar(), defaultAvatar);

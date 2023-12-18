@@ -1,9 +1,6 @@
 package com.niksahn.laba5.model.response;
 
-import com.niksahn.laba5.model.dto.CourseDto;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class CourseResponse {
     public Long id;
