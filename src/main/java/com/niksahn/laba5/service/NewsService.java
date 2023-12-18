@@ -81,6 +81,7 @@ public class NewsService {
                     imagesRepository.delete(it);
                 }
         );
+        newsRepository.deleteById(new_id);
         return OperationRezult.Success;
     }
 
