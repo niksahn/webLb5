@@ -89,7 +89,7 @@ public class UserController {
         if (user.getRole() != Role.admin) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(OperationRezult.No_Right.toString());
         ArrayList<UserDto> users = new ArrayList<>();
         userRepository.findAll().forEach(users::add);
-        return ResponseEntity.status(HttpStatus.OK).body(new AllUsers(users));
+        return ResponseEntity.status(HttpStatus.OK).body(users);
     }
 
     @PostMapping(value = "/delete")
