@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 import static com.niksahn.laba5.Constants.course_path;
+import static com.niksahn.laba5.Constants.image_path;
 
 @Service
 public class CourseService {
@@ -74,15 +75,19 @@ public class CourseService {
         return OperationRezult.Success;
     }
 
+    @Transactional
     public OperationRezult addCourse(String name, String description, String image, Long user_id) {
-        var file_name = fileService.setImage(image, course_path + name);
         var user = userRepository.findByUserId(user_id);
         if (user.getRole() == Role.admin || user.getRole() == Role.moderator) {
+            CourseDto course;
             try {
-                courseRepository.save(new CourseDto(name, description, file_name));
+                course = courseRepository.save(new CourseDto(name, description, null));
             } catch (Exception e) {
                 return OperationRezult.Repeat_In_Db;
             }
+            var file_name = fileService.setImage(image, course_path + course.getId().toString());
+            course.setImage_path(file_name);
+            courseRepository.save(course);
             return OperationRezult.Success;
         } else return OperationRezult.No_Right;
     }
@@ -98,7 +103,6 @@ public class CourseService {
             } catch (Exception e) {
                 return OperationRezult.Repeat_In_Db;
             }
-            fileService.deleteImage(course.get().getImage_path());
             return OperationRezult.Success;
         } else return OperationRezult.No_Right;
     }

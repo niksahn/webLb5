@@ -11,5 +11,5 @@ public interface NewsRepository extends CrudRepository<NewsDto,Long> {
 
     @Modifying
     @Query(value = "delete from news where  user_id = :user_id", nativeQuery = true)
-    Void dellByUserId(Long user_id);
+    void dellByUserId(Long user_id);
 }

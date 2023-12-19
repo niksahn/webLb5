@@ -10,16 +10,19 @@ import com.niksahn.laba5.model.dto.NewsDto;
 import com.niksahn.laba5.repository.ImagesRepository;
 import com.niksahn.laba5.repository.NewsRepository;
 import com.niksahn.laba5.repository.UserRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 
 import static com.niksahn.laba5.Constants.news_path;
 import static com.niksahn.laba5.controller.Common.checkAuth;
+import static com.niksahn.laba5.controller.Common.validate;
 
 
 @RestController
@@ -56,9 +59,11 @@ public class NewsController {
 
     @PostMapping(value = "/add", consumes = MediaType.APPLICATION_JSON_VALUE)
     @CrossOrigin
-    public ResponseEntity<?> addNew(@RequestHeader("Authorization") Long session_id, @RequestBody AddNewsRequest request) {
+    public ResponseEntity<?> addNew(@RequestHeader("Authorization") Long session_id, @RequestBody @Valid AddNewsRequest request, BindingResult bindingResult) {
         var auth = checkAuth(session_id, sessionService);
         if (auth != null) return auth;
+        var valid = validate(bindingResult);
+        if (valid != null) return valid;
         var operation = newsService.addNew(request.title, request.description, request.images, request.user_id);
         if (operation == OperationRezult.Success) return ResponseEntity.status(HttpStatus.OK).body(null);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(operation.toString());
@@ -66,9 +71,11 @@ public class NewsController {
 
     @PostMapping(value = "/edit", consumes = MediaType.APPLICATION_JSON_VALUE)
     @CrossOrigin
-    public ResponseEntity<?> editNew(@RequestHeader("Authorization") Long session_id, @RequestBody AddNewsRequest request, @RequestParam Long id) {
+    public ResponseEntity<?> editNew(@RequestHeader("Authorization") Long session_id, @RequestBody @Valid AddNewsRequest request, @RequestParam Long id, BindingResult bindingResult) {
         var auth = checkAuth(session_id, sessionService);
         if (auth != null) return auth;
+        var valid = validate(bindingResult);
+        if (valid != null) return valid;
         var operation = newsService.editNew(id, request.title, request.description, request.images, request.user_id);
         if (operation == OperationRezult.Success) return ResponseEntity.status(HttpStatus.OK).body(null);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(operation.toString());

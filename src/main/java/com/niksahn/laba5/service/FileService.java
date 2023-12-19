@@ -53,14 +53,13 @@ public class FileService {
             Files.write(Paths.get(image_path + "/" + name + imageType), file);
             return name + imageType;
         } catch (Exception e) {
-            e.printStackTrace();
             return avatar_path + "default" + defaultImageType;
         }
     }
 
     public boolean deleteImage(String name) {
         try {
-            Files.deleteIfExists(Paths.get(name));
+            Files.delete(Paths.get(image_path + name));
             return true;
         } catch (Exception e) {
             return false;

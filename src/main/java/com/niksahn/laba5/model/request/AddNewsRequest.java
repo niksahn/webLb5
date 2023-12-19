@@ -1,11 +1,17 @@
 package com.niksahn.laba5.model.request;
 
+import jakarta.validation.constraints.NotEmpty;
+
 import java.util.ArrayList;
 
 public class AddNewsRequest {
 
     public Long user_id;
+
+    @NotEmpty(message = "Поле названия не заполнено")
     public String title;
+
+    @NotEmpty(message = "Поле описания не заполнено")
     public String description;
     public ArrayList<String> images;
 

@@ -19,6 +19,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.ObjectError;
@@ -31,6 +32,7 @@ import java.util.Objects;
 
 import static com.niksahn.laba5.Constants.avatar_path;
 import static com.niksahn.laba5.controller.Common.checkAuth;
+import static com.niksahn.laba5.controller.Common.validate;
 
 @RestController
 @CrossOrigin
@@ -98,29 +100,34 @@ public class UserController {
 
     @PostMapping(value = "/delete")
     @CrossOrigin
+    @Transactional
     public ResponseEntity<?> dellUser(@RequestHeader("Authorization") Long session_id, @RequestParam Long user_id) {
         var auth = checkAuth(session_id, sessionService);
         if (auth != null) return auth;
         var userAdmin_id = sessionService.getUserIdFromSession(session_id);
         var user = userRepository.findByUserId(userAdmin_id);
         if (user.getRole() != Role.admin) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(OperationRezult.No_Right.toString());
-        userRepository.deleteById(user_id);
         userCourseRepository.dellByUserId(user_id);
         newsRepository.dellByUserId(user_id);
+        userRepository.deleteById(user_id);
+        sessionService.deleteSession(sessionService.getSession(user_id));
         return ResponseEntity.status(HttpStatus.OK).body(OperationRezult.Success.toString());
     }
 
 
     @PostMapping(value = "/edit")
     @CrossOrigin
-    public ResponseEntity<?> editUser(@RequestHeader("Authorization") Long session_id, @RequestParam Long user_id, @RequestBody EditUserRequest request) {
+    @Transactional
+    public ResponseEntity<?> editUser(@RequestHeader("Authorization") Long session_id, @RequestParam Long user_id, @RequestBody @Valid EditUserRequest request, BindingResult bindingResult) {
         var auth = checkAuth(session_id, sessionService);
         if (auth != null) return auth;
+        var valid = validate(bindingResult);
+        if (valid != null) return valid;
         var userAdmin_id = sessionService.getUserIdFromSession(session_id);
         var user = userRepository.findByUserId(userAdmin_id);
         if (user.getRole() != Role.admin) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(OperationRezult.No_Right.toString());
         var name = fileService.setImage(request.avatar, avatar_path + user.getId());
-        userRepository.save(new UserDto(user_id, request.email, request.login, request.password, request.role, name));
+        userRepository.save(new UserDto(user_id, request.email, request.login, request.password, request.role, name, user.getEnter_сounter()));
         return ResponseEntity.status(HttpStatus.OK).body(OperationRezult.Success.toString());
     }
 
@@ -134,15 +141,8 @@ public class UserController {
     @CrossOrigin
     @PostMapping(value = "/registration", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> addUser(@RequestBody @Valid RegistrationRequest user, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            String result = "";
-            List<ObjectError> errors = bindingResult.getAllErrors();
-            for (ObjectError i : errors) {
-                String fieldErrors = ((FieldError) i).getField();
-                result += (fieldErrors + " - " + i.getDefaultMessage() + "\n");
-            }
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
-        }
+        var valid = validate(bindingResult);
+        if (valid != null) return valid;
         try {
             userRepository.save(new UserDto(user.email, user.login, user.password, Role.user, null));
         } catch (Exception e) {

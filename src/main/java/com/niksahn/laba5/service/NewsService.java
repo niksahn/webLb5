@@ -60,7 +60,7 @@ public class NewsService {
             imagesRepository.delete(it);
         });
         images.forEach(it -> {
-                    String nameFile = name + "_" + Random.from(RandomGenerator.getDefault()).nextLong();
+                    String nameFile = news_path + news.getId() + "_" + Random.from(RandomGenerator.getDefault()).nextLong();
                     var file = fileService.setImage(it, nameFile);
                     imagesRepository.save(new ImageNewsDto(file, news.getId()));
                 }
